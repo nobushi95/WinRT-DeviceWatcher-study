@@ -87,11 +87,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
+    <ClInclude Include="LightSensorDeviceWatcher.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="WinRT-DeviceWatcher-study.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="LightSensorDeviceWatcher.cpp" />
     <ClCompile Include="WinRT-DeviceWatcher-study.cpp" />
   </ItemGroup>
   <ItemGroup>
