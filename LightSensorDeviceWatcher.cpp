@@ -12,30 +12,32 @@ LightSensorDeviceWatcher::~LightSensorDeviceWatcher()
     Stop();
 }
 
-auto LightSensorDeviceWatcher::Start() noexcept -> void
+auto LightSensorDeviceWatcher::Start(std::function<void(const std::wstring&)> handler) noexcept -> void
 {
     _deviceWatcher = DeviceInformation::CreateWatcher(LightSensor::GetDeviceSelector());
 
     // デバイスが追加されたときのイベントハンドラ
-    auto deviceAddedHandler = [](const DeviceWatcher&, const DeviceInformation&)
+    auto deviceAddedHandler = [&handler](const DeviceWatcher&, const DeviceInformation&)
     {
-
+        handler(L"Added.");
     };
 
     // デバイスが削除されたときのイベントハンドラ
-    auto deviceRemovedHandler = [](const DeviceWatcher&, const DeviceInformationUpdate&)
+    auto deviceRemovedHandler = [&handler](const DeviceWatcher&, const DeviceInformationUpdate&)
     {
-
+        handler(L"Removed.");
     };
 
     // 列挙が完了したときのイベントハンドラ
-    auto enumerationCompletedHandler = [](const DeviceWatcher&, const winrt::Windows::Foundation::IInspectable&)
+    auto enumerationCompletedHandler = [&handler](const DeviceWatcher&, const winrt::Windows::Foundation::IInspectable&)
     {
+        handler(L"Enumaration Completed.");
     };
 
     // デバイスの更新があったときのイベントハンドラ
-    auto deviceUpdatedHandler = [](const DeviceWatcher&, const DeviceInformationUpdate&)
+    auto deviceUpdatedHandler = [&handler](const DeviceWatcher&, const DeviceInformationUpdate&)
     {
+        handler(L"Update.");
     };
 
     // イベントハンドラを設定

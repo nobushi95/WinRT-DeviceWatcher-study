@@ -1,5 +1,7 @@
 ﻿#include "framework.h"
 #include "WinRT-DeviceWatcher-study.h"
+#include <string>
+#include "LightSensorDeviceWatcher.h"
 
 #define MAX_LOADSTRING 100
 
@@ -13,6 +15,10 @@ ATOM                MyRegisterClass(HINSTANCE hInstance);
 BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
+
+HWND g_hWnd = nullptr;
+LightSensorDeviceWatcher g_lightSensorDeviceWatcher;
+auto ShowDeviceChangedMessage(const std::wstring& msg) -> void;
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                       _In_opt_ HINSTANCE hPrevInstance,
@@ -78,7 +84,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
     hInst = hInstance; // グローバル変数にインスタンス ハンドルを格納する
 
     HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
-                              CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
+                              CW_USEDEFAULT, 0, 500, 300, nullptr, nullptr, hInstance, nullptr);
 
     if (!hWnd)
     {
@@ -95,6 +101,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     switch (message)
     {
+        case WM_CREATE:
+        {
+            g_lightSensorDeviceWatcher.Start(ShowDeviceChangedMessage);
+            break;
+        }
         case WM_COMMAND:
         {
             int wmId = LOWORD(wParam);
@@ -121,8 +132,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         }
         break;
         case WM_DESTROY:
+        {
+            g_lightSensorDeviceWatcher.Stop();
             PostQuitMessage(0);
             break;
+        }
         default:
             return DefWindowProc(hWnd, message, wParam, lParam);
     }
@@ -146,4 +160,12 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
             break;
     }
     return (INT_PTR)FALSE;
+}
+
+auto ShowDeviceChangedMessage(const std::wstring& msg) -> void
+{
+    if (g_hWnd == nullptr)
+        return;
+
+    MessageBoxW(g_hWnd, msg.c_str(), L"Device Changed", MB_OK);
 }

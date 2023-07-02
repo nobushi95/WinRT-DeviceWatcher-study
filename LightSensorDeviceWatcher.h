@@ -1,5 +1,7 @@
 ﻿#pragma once
 #include <winrt/windows.devices.enumeration.h>
+#include <string>
+#include <functional>
 
 using namespace winrt;
 using namespace Windows::Devices::Enumeration;
@@ -12,7 +14,7 @@ public:
     LightSensorDeviceWatcher(const LightSensorDeviceWatcher&) = delete;
     LightSensorDeviceWatcher(LightSensorDeviceWatcher&&) = delete;
 
-    auto Start() noexcept -> void;
+    auto Start(std::function<void(const std::wstring&)> handler) noexcept -> void;
     auto Stop() const noexcept -> void;
     auto IsStarted() const noexcept -> bool;
 
