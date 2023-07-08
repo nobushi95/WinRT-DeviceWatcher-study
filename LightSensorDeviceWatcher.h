@@ -20,5 +20,6 @@ public:
 
 private:
     DeviceWatcher _deviceWatcher{ nullptr };
+    event_token _tokenAdded, _tokenRemoved, _tokenEnumerationCompleted, _tokenUpdated, _tokenStopped;
 };
 
